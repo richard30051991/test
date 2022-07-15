@@ -1,0 +1,8 @@
+220 /v2/compute
+POST /v2/compute HTTP/1.1
+Host: 192.168.201.6
+User-Agent: Yandex-Tank-Dev
+Content-Type: application/json; charset=utf-8
+Content-Length: 80
+
+{"clients":["aecc3c18021f47073ea0b2d5156e9583c655c8267feb7e1a83a9cf8037f124f5"]}

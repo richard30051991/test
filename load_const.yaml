@@ -1,0 +1,50 @@
+overload:
+  enabled: true
+  token_file: "token.txt"   #Токен можно взять после регистрации на overload.yandex.net
+  job_name: test_load   #Имя теста - будет отображаться в отчёте
+  job_dsc: bank   #Описание теста - будет отображаться в отчёте
+phantom:
+  address: 192.168.201.6   #Хост, куда будем стучаться
+  port: '7190'   #Порт
+  load_profile:
+     load_type: rps
+     schedule: const(10, 5m)
+  ammofile: "ammo.txt"   #Файл содержит запросы
+  ssl: false    # True, если используется шифрование. Просто так включать не нужно, тк будет ошибка
+  autocases: 1  
+  multi:   #В этом блоке указываем другие порты. Обязателен данный формат. Вынос порта в поле port отдельно не работает
+    - address: 192.168.201.6:7290
+      load_profile:
+        load_type: rps #Если в load_type выбрал instances - укажи кол-во, по умолчанию instances = 1000
+        schedule: const(20, 5m)
+      autocases: 2
+    - address: 192.168.201.6:7390
+      load_profile:
+        load_type: rps
+        schedule: const(30, 5m)
+      autocases: 3
+    - address: 192.168.201.6:7490
+      load_profile:
+        load_type: rps
+        schedule: const(40, 5m)
+      autocases: 4
+    - address: 192.168.201.6:7590
+      load_profile:
+        load_type: rps
+        schedule: const(50, 5m)
+      autocases: 5
+autostop:
+  autostop:
+    - quantile(95,1000ms,10s)   #Условие остановки теста. В данном случае stop, если 95% запросов в течение 10 секунд выполняется медленнее, чем 1 секунда
+console:
+  enabled: true   #Вывод в консоль
+telegraf:
+  enabled: false   #Инструмент для сбора метрик с сервера. Настройка только по SSH, если не включить в конфиг, то в консоли будет ошибка. Не удалять
+  
+#load_type: может быть rps или instances:
+#rps: requests per second – указываем желаемое количество запросов в секунду
+#instances: указываем желаемое количество активных тредов, которые будут генерировать столько rps, сколько смогут
+#schedule: может быть const, line или step (или все три вместе) – определяет характер генерируемой нагрузки, см. Tutorials:
+#const: указывается в виде (load,dur), где load – кол-во rps, dur – время для выполнение тестирования, в примере выше – выполняем 1 запрос в секунд в течение 30 секунд
+#line: указывается в виде (a,b,dur), где a – начальное кол-во rps, b – конечное, dur – время для выполнение тестирования, в течение которого значение будет линейно увеличиваться от a до b
+#step: указывается в виде (a,b,step,dur), где a – начальное кол-во rps, b – конечное, step – на сколько rps увеличивать, dur – время между каждым step
